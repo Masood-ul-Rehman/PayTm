@@ -22,3 +22,10 @@ export const signToken = (userId: Types.ObjectId) =>
       process.env.JWT_SECRET
     );
   })();
+export const verifyToken = (token: string) =>
+  (() => {
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined in the environment variables");
+    }
+    return jwt.verify(token, process.env.JWT_SECRET);
+  })();
