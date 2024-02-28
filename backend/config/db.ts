@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
-mongoose.connect(process.env.MONGO_URI || "");
-
-const db = mongoose.connection;
-
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
-db.once("open", () => {
-  console.log("Connected to MongoDB");
-});
+const connectDB = async () => {
+  try {
+    if (!process.env.MONGO_URI) throw new Error("Mongo Url is not defined");
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("db is conected");
+  } catch (error) {
+    console.log(error);
+  }
+};
+export default connectDB;
