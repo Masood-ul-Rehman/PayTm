@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
-import { signinBody, signupBody } from "../schemas/user";
-import { getUserByEmail, signToken } from "../lib/user";
+import { signinBody, signupBody, updateUserBody } from "../schemas/userSchema";
+import { getUserByEmail, signToken, updateUserById } from "../lib/user";
 import User from "../models/userModel";
 import { Types } from "mongoose";
 export const createNewUser = async (req: Request, res: Response) => {
   const { email, password, firstName, lastName } = req.body;
+
   const { success } = signupBody.safeParse(req.body);
   if (!success)
     return res.status(411).json({
@@ -56,4 +57,22 @@ export const signin = async (req: Request, res: Response) => {
       message: "Login successfull",
     });
   }
+};
+export const updateUser = async (req: Request, res: Response) => {
+  const { firstName, lastName, password } = req.body;
+  const { success } = updateUserBody.safeParse(req.body);
+  if (!success)
+    return res.status(411).json({
+      message: "Please provide all fields in correct format",
+    });
+  const userId = req.params.id;
+  const updatedUser = await updateUserById(
+    userId,
+    firstName,
+    lastName,
+    password
+  );
+  res.json({
+    user: updatedUser,
+  });
 };
