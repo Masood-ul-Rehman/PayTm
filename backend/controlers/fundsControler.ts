@@ -32,12 +32,14 @@ export const transferFunds = async (req: Request, res: Response) => {
     });
   const account = await findAccountById(req.userId);
   if (!account) {
+    session.abortTransaction();
     return res.status(400).json({
       message: "Account not found",
     });
   }
 
   if (account.balance < amount) {
+    session.abortTransaction();
     return res.status(400).json({
       message: "Insufficient balance",
     });
