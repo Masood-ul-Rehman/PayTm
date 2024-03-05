@@ -3,6 +3,7 @@ import { signinBody, signupBody, updateUserBody } from "../schemas/userSchema";
 import { getUserByEmail, signToken, updateUserById } from "../lib/user";
 import User from "../models/userModel";
 import { Types } from "mongoose";
+import Account from "../models/accountModel";
 export const createNewUser = async (req: Request, res: Response) => {
   const { email, password, firstName, lastName } = req.body;
 
@@ -23,6 +24,11 @@ export const createNewUser = async (req: Request, res: Response) => {
     firstName,
     lastName,
   });
+  await Account.create({
+    userId: newUser._id,
+    balance: 1 + Math.random() * 10000,
+  });
+
   const userId: Types.ObjectId = newUser._id;
 
   const token = signToken(userId);
